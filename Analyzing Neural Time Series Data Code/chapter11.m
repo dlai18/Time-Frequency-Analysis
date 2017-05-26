@@ -1,16 +1,16 @@
 %% Analyzing Neural Time Series Data
 % Matlab code for Chapter 11
 % Mike X Cohen
-% 
-% This code accompanies the book, titled "Analyzing Neural Time Series Data" 
-% (MIT Press). Using the code without following the book may lead to confusion, 
-% incorrect data analyses, and misinterpretations of results. 
-% Mike X Cohen assumes no responsibility for inappropriate or incorrect use of this code. 
+%
+% This code accompanies the book, titled "Analyzing Neural Time Series Data"
+% (MIT Press). Using the code without following the book may lead to confusion,
+% incorrect data analyses, and misinterpretations of results.
+% Mike X Cohen assumes no responsibility for inappropriate or incorrect use of this code.
 
 %% Figure 11.1
 
 srate = 1000; % sampling rate of 1 kHz
-time  = -1:1/srate:1; 
+time  = -1:1/srate:1;
 freq  = 10; % in Hz
 amp   = 2; % amplitude, or height of the sine wave
 
@@ -25,11 +25,11 @@ title('My first sine wave!')
 
 % define a sampling rate
 srate = 500;
- 
+
 % list some frequencies
 frex = [ 3   10   5   15   35 ];
 
-% list some random amplitudes... make sure there are 
+% list some random amplitudes... make sure there are
 % the same number of amplitudes as there are frequencies!
 amplit = [ 5   15   10   5   7 ];
 
@@ -81,11 +81,11 @@ s3 = s1+s2;
 figure
 for i=1:3
     subplot(2,3,i)
-    
+
     % plot sine waves, using the eval command (evaluate the string)
     eval([ 'plot(time,s' num2str(i) ')' ]);
     set(gca,'ylim',[-1.6 1.6],'ytick',-1.5:.5:1.5)
-    
+
     % plot power
     subplot(2,3,i+3)
     f  = eval([ 'fft(s' num2str(i) ')/length(time)' ]);
@@ -103,11 +103,11 @@ nyquist = srate/2;    % Nyquist frequency -- the highest frequency you can measu
 
 
 % initialize Fourier output matrix
-fourier = zeros(size(data)); 
+fourier = zeros(size(data));
 
 % These are the actual frequencies in Hz that will be returned by the
 % Fourier transform. The number of unique frequencies we can measure is
-% exactly 1/2 of the number of data points in the time series (plus DC). 
+% exactly 1/2 of the number of data points in the time series (plus DC).
 frequencies = linspace(0,nyquist,N/2+1);
 time = ((1:N)-1)/N;
 
@@ -212,7 +212,7 @@ frex = [ 3 10 5 7 ];
 % list some random amplitudes
 amplit = [ 5 15 10 5 ];
 
-% phases... 
+% phases...
 phases = [  pi/7  pi/8  pi  pi/2 ];
 
 % create a time series of sequenced sine waves
@@ -222,20 +222,20 @@ stationary  = zeros(1,length(time)*length(frex));
 nonstationary = zeros(1,length(time)*length(frex));
 
 for fi=1:length(frex)
-    
+
     % compute sine wave
     temp_sine_wave = amplit(fi) * sin(2*pi*frex(fi).*time + phases(fi));
-    
+
     % enter into stationary time series
     stationary = stationary + repmat(temp_sine_wave,1,length(frex));
-    
+
     % optional change of amplitude over time
     temp_sine_wave = temp_sine_wave.*(time+1);
-    
+
     % determine start and stop indices for insertion of sine wave
     start_idx = (fi-1)*length(time)+1;
     stop_idx  = (fi-1)*length(time)+length(time);
-    
+
     % enter into non-stationary time series
     nonstationary(start_idx:stop_idx) = temp_sine_wave;
 end
@@ -309,39 +309,39 @@ fg    = [15 5];
 s     = sin(2*pi*f*time);
 
 for i=1:2
-    
+
     % compute Gaussian
     g = exp((-time.^2)/(2*(4/(2*pi*fg(i))^2)))/fg(i);
-    
-    
+
+
     figure
-    
+
     subplot(411)
     plot(time,s)
     title('Sine wave (signal)')
     set(gca,'ylim',[-1.1 1.1])
-    
+
     subplot(412)
     plot(time,g)
     title('Gaussian (kernel)')
-    
+
     subplot(413)
     plot(time,conv(s,g,'same'))
     set(gca,'ylim',[-1.1 1.1])
     title('result of convolution')
-    
+
     subplot(427)
     fft_s = abs(fft(s));
     fft_s = fft_s(1:floor(length(fft_s)/2)+1)./max(fft_s(1:floor(length(fft_s)/2)+1));
     bar(0:500,fft_s,'r')
     hold on
-    
+
     fft_g = abs(fft(g));
     fft_g = fft_g(1:floor(length(fft_g)/2)+1)./max(fft_g(1:floor(length(fft_g)/2)+1));
     plot(0:500,fft_g)
     set(gca,'xlim',[0 40],'ylim',[0 1.05])
     title('individual power spectra')
-    
+
     subplot(428)
     bar(0:500,fft_g.*fft_s)
     set(gca,'xlim',[0 40],'ylim',[0 .035])

@@ -1,11 +1,11 @@
 %% Analyzing Neural Time Series Data
 % Matlab code for Chapter 12
 % Mike X Cohen
-% 
-% This code accompanies the book, titled "Analyzing Neural Time Series Data" 
-% (MIT Press). Using the code without following the book may lead to confusion, 
-% incorrect data analyses, and misinterpretations of results. 
-% Mike X Cohen assumes no responsibility for inappropriate or incorrect use of this code. 
+%
+% This code accompanies the book, titled "Analyzing Neural Time Series Data"
+% (MIT Press). Using the code without following the book may lead to confusion,
+% incorrect data analyses, and misinterpretations of results.
+% Mike X Cohen assumes no responsibility for inappropriate or incorrect use of this code.
 
 %% Figure 12.1
 
@@ -82,7 +82,7 @@ title('Sine wave')
 subplot(312)
 plot(time,gaussian_win) % plots the Gaussian window
 title('Gaussian window')
- 
+
 subplot(313)
 plot(time,real(wavelet)); % plots the wavelet
 title('My first wavelet!')
@@ -95,8 +95,8 @@ lowest_frequency  =   2;  % in Hz
 highest_frequency = 100;  % in Hz
 
 frequencies=linspace(lowest_frequency,highest_frequency,num_wavelets);
-% note: the "linspace" function creates linearly spaced numbers between the first and second 
-% inputs, with the number of steps corresponding to the third input. 
+% note: the "linspace" function creates linearly spaced numbers between the first and second
+% inputs, with the number of steps corresponding to the third input.
 figure, plot(frequencies,'-*')
 xlabel('Frequency order')
 ylabel('Frequency in Hz')
@@ -104,19 +104,19 @@ ylabel('Frequency in Hz')
 
 % initialize wavelet family
 wavelet_family = zeros(num_wavelets,length(time));
- 
+
 % Loop through frequencies and make a family of wavelets.
 for fi=1:num_wavelets
-    
+
     % create a sine wave at this frequency
     sinewave = exp(2*1i*pi*frequencies(fi).*time); % the "1i" makes it a complex wavelet
-    
+
     % create a Gaussian window
     gaus_win = exp(-time.^2./(2*(6/(2*pi*frequencies(fi)))^2));
-    
+
     % create wavelet via element-by-element multiplication of the sinewave and gaussian window
     wavelet_family(fi,:) = sinewave.*gaus_win;
-    
+
     % note that you can also do this on one line:
     wavelet_family(fi,:) = exp(2*1i*pi*frequencies(fi).*time) .* exp(-time.^2./(2*(6/(2*pi*frequencies(fi)))^2));
 end
@@ -124,10 +124,10 @@ end
 % Plot a few wavelets
 figure
 subplot(2,1,1)
-plot(time,real(wavelet_family(1:round(rand*30):end,:))') 
+plot(time,real(wavelet_family(1:round(rand*30):end,:))')
 title('A few wavelets...')
- 
-% Note that in the subplot command you don't need commas if you have fewer than 10 
+
+% Note that in the subplot command you don't need commas if you have fewer than 10
 % rows/cols and if you are not using any variables.
 subplot(212)
 plot(time,real(wavelet_family(30,:)))
@@ -140,7 +140,7 @@ legend({'real';'imaginary'})
 % finally, image the wavelet family.
 figure
 imagesc(time,frequencies,real(wavelet_family))
-axis xy % equivalent to "set(gca,'ydir','normal')
+axis xy % equivalent to "set(gca,'ydir','normal')"
 xlabel('Time (s)')
 ylabel('Frequency (Hz)')
 
@@ -149,7 +149,7 @@ ylabel('Frequency (Hz)')
 % Running this cell will generate a movie that shows how a line -- in this
 % case, a wavelet -- goes from a line that goes up and down, to a colored
 % 'flat' line in a 2-D image. This is the principle that underlies viewing
-% time-frequency plots. 
+% time-frequency plots.
 
 figure, set(gcf,'color','k')
 surf(repmat(real(wavelet),2,1))
@@ -157,12 +157,12 @@ shading interp
 axis off
 axis([0 length(time) -20 21 -1 1])
 view([ -4 4 ])
- 
+
 for i=4:2:90
     view([ -4 i ])
     pause(.1)
 end
- 
+
 rotate3d
 
 %% Figure 12.5
@@ -174,7 +174,7 @@ eegdata = squeeze(EEG.data(47,:,10));
 time = -1:1/EEG.srate:1;
 f = 6; % frequency of sine wave in Hz
 sine_wave = exp(1i*2*pi*f.*time);
-s = 4.5/(2*pi*f); 
+s = 4.5/(2*pi*f);
 gaussian_win = exp(-time.^2./(2*s^2));
 wavelet = sine_wave .* gaussian_win;
 % half of the wavelet size, useful for chopping off edges after convolution.
@@ -189,16 +189,16 @@ fft_e = fft(eegdata,n_conv);
 ift   = ifft(fft_e.*fft_w,n_conv)*sqrt(s)/10; % sqrt... is an empirical scaling factor that works here
 wavelet_conv_data = real(ift(halfwaveletsize:end-halfwaveletsize+1));
 
-% create filter and apply to data 
+% create filter and apply to data
 % (more on how to interpret this code in a few chapters!)
-nyquist       = EEG.srate/2;
-transition_width = 0.2; % percent
-filter_low    = 4; % Hz
-filter_high   = 8; % Hz
-ffrequencies  = [ 0 filter_low*(1-transition_width) filter_low filter_high filter_high*(1+transition_width) nyquist ]/nyquist;
-idealresponse = [ 0 0 1 1 0 0 ];
-filterweights = firls(round(3*(EEG.srate/filter_low)),ffrequencies,idealresponse);
-eeg_4to8      = filtfilt(filterweights,1,double(eegdata));
+nyquist           = EEG.srate/2;
+transition_width  = 0.2; % percent
+filter_low        = 4; % Hz
+filter_high       = 8; % Hz
+ffrequencies      = [ 0 filter_low*(1-transition_width) filter_low filter_high filter_high*(1+transition_width) nyquist ]/nyquist;
+idealresponse     = [ 0 0 1 1 0 0 ];
+filterweights     = firls(round(3*(EEG.srate/filter_low)),ffrequencies,idealresponse);
+eeg_4to8          = filtfilt(filterweights,1,double(eegdata));
 
 
 
