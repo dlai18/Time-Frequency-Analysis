@@ -1,11 +1,11 @@
 %% Analyzing Neural Time Series Data
 % Matlab code for Chapter 14
 % Mike X Cohen
-% 
-% This code accompanies the book, titled "Analyzing Neural Time Series Data" 
-% (MIT Press). Using the code without following the book may lead to confusion, 
-% incorrect data analyses, and misinterpretations of results. 
-% Mike X Cohen assumes no responsibility for inappropriate or incorrect use of this code. 
+%
+% This code accompanies the book, titled "Analyzing Neural Time Series Data"
+% (MIT Press). Using the code without following the book may lead to confusion,
+% incorrect data analyses, and misinterpretations of results.
+% Mike X Cohen assumes no responsibility for inappropriate or incorrect use of this code.
 
 %% Figure 14.1
 
@@ -43,7 +43,7 @@ negF = ceil(n/2)+1+~mod(n,2):n;
 % (note 2: positive frequencies are rotated counter-clockwise; negative frequencies are rotated clockwise)
 f(posF) = f(posF) + -1i*complexf(posF);
 f(negF) = f(negF) +  1i*complexf(negF);
-% The next two lines are an alternative and slightly faster method. 
+% The next two lines are an alternative and slightly faster method.
 % The book explains why this is equivalent to the previous two lines.
 % f(posF) = f(posF)*2;
 % f(negF) = f(negF)*0;
@@ -74,7 +74,7 @@ title('phase of Hilbert transform')
 
 load sampleEEGdata
 
-% first, filter data (filter mechanisms will be explained more below; for now, focus on 
+% first, filter data (filter mechanisms will be explained more below; for now, focus on
 % using the phases from the Hilbert transform to test whether the matrix input was correct)
 
 nyquist = EEG.srate/2;
@@ -96,7 +96,7 @@ end
 
 % apply hilbert transform in correct and incorrect orientations
 hilbert_oops = hilbert(filtered_data);
-hilbert_yes  = hilbert(filtered_data')'; % time should be in the first dimension. 
+hilbert_yes  = hilbert(filtered_data')'; % time should be in the first dimension.
 % Note that the output of the hilbert transform is transposed to bring us back to an electrode X time matrix.
 
 figure
@@ -267,7 +267,7 @@ xlabel('Frequency (Hz)')
 % that produced by firls if you set the transition zone to zero and then
 % smooth the filter kernel with a Hamming window. In the plot, the red and magenta
 % lines overlap, which is why you don't see the fir1 filter kernel. You can
-% subtract them and show that the difference (which is due to re-scaling 
+% subtract them and show that the difference (which is due to re-scaling
 % of the kernel after windowing) is 3-4 orders of magnitude smaller than
 % the kernel itself, hence, nearly identical.
 
@@ -342,21 +342,21 @@ filterwidths = linspace(0.05,0.3,40);
 
 sse = zeros(length(centerfreqs),length(transwidths));
 for centfreqi = 1:length(centerfreqs)
-    
+
     center_freq = centerfreqs(centfreqi);
-    
+
     for transwidi = 1:length(transwidths)
-        
+
         filter_frequency_spread_wide = center_freq*.2;
         transition_width = transwidths(transwidi);
-        
+
         ffrequencies   = [ 0 (1-transition_width)*(center_freq-filter_frequency_spread_wide) (center_freq-filter_frequency_spread_wide) (center_freq+filter_frequency_spread_wide) (1+transition_width)*(center_freq+filter_frequency_spread_wide) nyquist ]/nyquist;
         filterweightsW = zscore(firls(200,ffrequencies,idealresponse));
-        
+
         fft_filtkern   = abs(fft(filterweightsW));
         fft_filtkern   = fft_filtkern./max(fft_filtkern); % normalized to 1.0 for visual comparison ease
         freqsidx = dsearchn(hz_filtkern',ffrequencies'*nyquist);
-        
+
         sse(centfreqi,transwidi) = sum( (idealresponse-fft_filtkern(freqsidx)).^2 );
     end
 end
@@ -369,21 +369,21 @@ set(gca,'clim',[0 1]), colorbar
 
 sse = zeros(length(centerfreqs),length(transwidths));
 for centfreqi = 1:length(centerfreqs)
-    
+
     center_freq = centerfreqs(centfreqi);
-    
+
     for transwidi = 1:length(transwidths)
-        
+
         filter_frequency_spread_wide = center_freq*filterwidths(transwidi);
         transition_width = .2;
-        
+
         ffrequencies   = [ 0 (1-transition_width)*(center_freq-filter_frequency_spread_wide) (center_freq-filter_frequency_spread_wide) (center_freq+filter_frequency_spread_wide) (1+transition_width)*(center_freq+filter_frequency_spread_wide) nyquist ]/nyquist;
         filterweightsW = zscore(firls(200,ffrequencies,idealresponse));
-        
+
         fft_filtkern  = abs(fft(filterweightsW));
         fft_filtkern  = fft_filtkern./max(fft_filtkern); % normalized to 1.0 for visual comparison ease
         freqsidx = dsearchn(hz_filtkern',ffrequencies'*nyquist);
-        
+
         sse(centfreqi,transwidi) = sum( (idealresponse-fft_filtkern(freqsidx)).^2 );
     end
 end

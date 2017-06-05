@@ -1,11 +1,11 @@
 %% Analyzing Neural Time Series Data
 % Matlab code for Chapter 13
 % Mike X Cohen
-% 
-% This code accompanies the book, titled "Analyzing Neural Time Series Data" 
-% (MIT Press). Using the code without following the book may lead to confusion, 
-% incorrect data analyses, and misinterpretations of results. 
-% Mike X Cohen assumes no responsibility for inappropriate or incorrect use of this code. 
+%
+% This code accompanies the book, titled "Analyzing Neural Time Series Data"
+% (MIT Press). Using the code without following the book may lead to confusion,
+% incorrect data analyses, and misinterpretations of results.
+% Mike X Cohen assumes no responsibility for inappropriate or incorrect use of this code.
 
 %% Figure 13.1
 
@@ -16,7 +16,7 @@ time  = -1:1/srate:1; % time, from -1 to 1 second in steps of 1/sampling-rate
 s     = 6/(2*pi*f);
 
 % and together they make a wavelet
-wavelet = exp(2*pi*1i*f.*time) .* exp(-time.^2./(2*s^2)); 
+wavelet = exp(2*pi*1i*f.*time) .* exp(-time.^2./(2*s^2));
 
 figure
 subplot(221)
@@ -31,8 +31,8 @@ subplot(222)
 plot3(time,real(wavelet),imag(wavelet),'g')
 xlabel('Time (ms)'), ylabel('imaginary axis')
 view(0,0)
-title('Projection onto imaginary and time axes') 
- 
+title('Projection onto imaginary and time axes')
+
 % plot projection onto real and imaginary axes
 subplot(223)
 plot3(time,real(wavelet),imag(wavelet),'k')
@@ -62,7 +62,7 @@ rotate3d
 frequency = 6;         % frequency of the sine wave
 srate = 500;           % note: should be the same as the data
 time  = -.5:1/srate:.5; % vector of time
- 
+
 % make wavelet
 wavelet = exp(2*1i*pi*frequency.*time) .* exp(-time.^2./(2*(4/(2*pi*frequency))^2));
 
@@ -88,16 +88,16 @@ set(gca,'ylim',[-1 1],'xlim',[-1 1])
 title('Polar representation')
 xlabel('Real axis'), ylabel('Imaginary axis')
 axis square
- 
+
 % loop through time and update data
 for ti=1:timeskip:length(time)
-    
+
     % update real part of cartesian plot
     set(cplotR,'XData',time(1:ti),'YData',real(wavelet(1:ti)))
-    
+
     % update imaginary part of cartesian plot
     set(cplotI,'XData',time(1:ti),'YData',imag(wavelet(1:ti)))
-    
+
     % update polar plot
     set(pplot,'XData',real(wavelet(1:ti)),'YData',imag(wavelet(1:ti)))
     drawnow
@@ -113,19 +113,19 @@ subplot(221)
 plot(cos(time)+1i*sin(time))
 axis square
 title('cos\theta + isin\theta')
- 
+
 subplot(222)
 plot(exp(1i*time))
 axis square
 title('e^i^\theta')
- 
+
 subplot(223)
 plot(cos(time)+1i*sin(time),'bo-','markersize',8)
 hold on
 plot(exp(1i*time),'r.-')
 axis square
 title('Both')
- 
+
 subplot(224)
 plot(cos(time)+1i*sin(time))
 hold on
@@ -288,12 +288,12 @@ time  = -1:1/srate:1; % time, from -1 to 1 second in steps of 1/sampling-rate
 % create a 9 Hz wavelet
 f = 9; % frequency of wavelet in Hz
 s = 6/(2*pi*f);
-wavelet9 = exp(2*pi*1i*f.*time) .* exp(-time.^2./(2*s^2)); 
+wavelet9 = exp(2*pi*1i*f.*time) .* exp(-time.^2./(2*s^2));
 
 % create a 10 Hz wavelet
 f = 10; % frequency of wavelet in Hz
 s = 6/(2*pi*f);
-wavelet10 = exp(2*pi*1i*f.*time) .* exp(-time.^2./(2*s^2)); 
+wavelet10 = exp(2*pi*1i*f.*time) .* exp(-time.^2./(2*s^2));
 
 
 figure
@@ -348,14 +348,14 @@ baseidx = dsearchn(EEG.times',[-500 -200]');
 
 % loop through frequencies and compute synchronization
 for fi=1:num_frex
-    
+
     wavelet = fft( sqrt(1/(s(fi)*sqrt(pi))) * exp(2*1i*pi*frex(fi).*time) .* exp(-time.^2./(2*(s(fi)^2))) , n_conv_pow2 );
-    
+
     % convolution
     eegconv = ifft(wavelet.*eegfft);
     eegconv = eegconv(1:n_convolution);
     eegconv = eegconv(half_of_wavelet_size+1:end-half_of_wavelet_size);
-    
+
     % Average power over trials (this code performs baseline transform,
     % which you will learn about in chapter 18)
     temppower = mean(abs(reshape(eegconv,EEG.pnts,EEG.trials)).^2,2);
@@ -434,12 +434,12 @@ figure
 for i=1:length(numcycles)
     % make wavelet
     wavelet = exp(2*1i*pi*frequency.*time) .* exp(-time.^2./(2*(numcycles(i)/(2*pi*frequency))^2));
-    
+
     subplot(2,2,i)
     plot(time,real(wavelet),wavecolors(i))
     xlabel('Time')
     title([ 'Wavelet at ' num2str(frequency) ' Hz with ' num2str(numcycles(i)) ' cycles' ])
-    
+
     subplot(2,1,2)
     hold on
     fft_wav = 2*abs(fft(wavelet));
@@ -470,7 +470,7 @@ hz    = linspace(0,srate/2,floor(N/2)+1);
 fwhm  = zeros(3,length(frex));
 
 for numcyclesi = 1:3
-    
+
     switch numcyclesi
         case 1
             numcycles=repmat(3,1,length(frex));
@@ -479,43 +479,43 @@ for numcyclesi = 1:3
         case 3
             numcycles=logspace(log10(3),log10(10),length(frex));
     end
-    
+
     for fi=1:length(frex)
-        
+
         % make wavelet
         wavelet = exp(2*1i*pi*frex(fi).*time) .* exp(-time.^2./(2*(numcycles(fi)/(2*pi*frex(fi)))^2));
-        
+
         % take FFT of wavelet
         fwave = fft(wavelet);
         fwave = abs(fwave(1:length(hz)))*2;
-        
+
         % normalize power to [0 1]
         fwave = fwave-min(fwave);
         fwave = fwave/max(fwave);
-        
+
         % find left and right 1/2
         [~,peakx]  = max(fwave); % if matlab crashes, replace "~" with "junk"
         [~,left5]  = min(abs(fwave(1:peakx)-.5));
         [~,right5] = min(abs(fwave(peakx:end)-.5));
         right5 = right5+peakx-1;
-        
+
         fwhm(numcyclesi,fi) = hz(right5)-hz(left5);
-        
+
         % plot one example of a wavelet's power spectrum and fwhm
         if fi==ceil(length(frex)/2) && numcyclesi==3
             figure
-            
+
             % plot power spectrum
             plot(hz,fwave,'.-')
             hold on
-            
+
             % plot fwhm
             plot(hz(left5),fwave(left5),'ro','markersize',10)
             plot(hz(right5),fwave(right5),'ro','markersize',10)
             % and draw lines to frequencies
             plot([hz(left5) hz(left5)],[0 fwave(left5)],'r')
-            plot([hz(right5) hz(right5)],[0 fwave(right5)],'r')            
-            
+            plot([hz(right5) hz(right5)],[0 fwave(right5)],'r')
+
             set(gca,'xlim',[0 30])
             xlabel('Frequency (Hz)')
             ylabel('Normalized power')
@@ -537,4 +537,3 @@ legend({'3';'10';'3-10'})
 set(gca,'xlim',[frex(1)*.8 frex(end)*1.2],'ylim',[min(fwhm(:))*.8 max(fwhm(:))*1.2],'xscale','log','xtick',round(logspace(log10(frex(1)),log10(frex(end)),6)),'yscale','log','ytick',round(10*logspace(log10(min(fwhm(:))),log10(max(fwhm(:))),6))/10)
 
 %% end.
-
