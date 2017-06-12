@@ -101,7 +101,7 @@ hilbert_yes  = hilbert(filtered_data')'; % time should be in the first dimension
 
 figure
 subplot(221)
-plot(EEG.times,angle(hilbert_yes(1,:)'),'b');
+plot(EEG.times,angle(hilbert_yes(1,:)),'b');
 title('correct matrix orientation')
 xlabel('Time (ms)'), ylabel('Phase angle (rad.)')
 set(gca,'xlim',[-1000 1500])
@@ -284,7 +284,7 @@ plot(filterweights)
 hold on
 plot(filterweights1,'r.')
 plot(filterweights.*hamming(length(filterweights))','m')
-legend({'firls';'fir1';'firls with hamming window'})
+legend({'firls';'fir1';'firls with hamming window'})'
 
 %% Figure 14.7a
 
